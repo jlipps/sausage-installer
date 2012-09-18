@@ -12,9 +12,9 @@ class SausageInstaller extends LibraryInstaller
         return 'sauce-sausage' === $packageType;
     }
 
-    public function updateCode(PackageInterface $initial, PackageInterface $target)
+    protected function preCodeUpdate($package)
     {
-        $path = $this->getInstallPath($initial);
+        $path = $this->getInstallPath($package);
         $config_file = $path.'/.sauce_config';
         $contents = null;
 
@@ -23,8 +23,11 @@ class SausageInstaller extends LibraryInstaller
             $contents = file_get_contents($config_file);
         }
 
-        parent::updateCode($initial, $target);
+        return array($config_file, $contents);
+    }
 
+    protected function postCodeUpdate($config_file, $contents)
+    {
         if ($contents) {
             $this->io->write("    Restoring Sauce config");
             file_put_contents($config_file, $contents);
@@ -35,5 +38,19 @@ class SausageInstaller extends LibraryInstaller
         } else {
             $this->io->write("<warning>    No Sauce config file found. Please run vendor/bin/sauce_config USERNAME API_KEY</warning>");
         }
+    }
+
+    public function updateCode(PackageInterface $initial, PackageInterface $target)
+    {
+        list($config_file, $contents) = $this->preCodeUpdate($initial);
+        parent::updateCode($initial, $target);
+        $this->postCodeUpdate($config_file, $contents);
+    }
+
+    public function installCode(PackageInterface $package)
+    {
+        list($config_file, $contents) = $this->preCodeUpdate($package);
+        parent::installCode($package);
+        $this->postCodeUpdate($config_file, $contents);
     }
 }
