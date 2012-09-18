@@ -10,7 +10,7 @@
     "role": "Lead"
   }],
   "autoload": {
-    "psr-0": {"Sauce": "src/"}
+    "psr-0": {"Sauce": "src/Composer/"}
   },
   "extra": {
     "class": "Sauce\\Composer\\SausageInstaller"
