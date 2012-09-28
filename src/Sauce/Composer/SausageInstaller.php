@@ -32,7 +32,7 @@ class SausageInstaller extends LibraryInstaller
             $this->io->write("    Restoring Sauce config");
             file_put_contents($config_file, $contents);
         } elseif (getenv('SAUCE_USERNAME') && getenv('SAUCE_ACCESS_KEY')) {
-            $this->io->write("Generating Sauce config based on environment variables");
+            $this->io->write("    Generating Sauce config based on environment variables");
             file_put_contents($config_file, getenv('SAUCE_USERNAME').','.
                 getenv('SAUCE_ACCESS_KEY'));
         } else {
